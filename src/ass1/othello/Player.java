@@ -16,7 +16,10 @@ public class Player {
   public Point placeDisc(){
     Point p = null;
     Scanner s = new Scanner(System.in);
-    System.out.println(myColor + "'s turn");
+    if(myColor == Color.BLACK)
+    System.out.println("BLACK 's turn");
+    else
+      System.out.println("WHITE 's turn");
     int x = s.nextInt();
     int y = s.nextInt();
 

@@ -14,6 +14,7 @@ public class Game {
     blackPlayer = new Player(Color.BLACK);
     whitePlayer = new Player(Color.WHITE);
     board = new Board();
+    board.print();
   }
   public static void main(String[] args) {
     new Game().start();
@@ -26,18 +27,18 @@ public class Game {
     while(!isFinished){
       Point p = current.placeDisc();
       
-      if (!board.legalMove(p, current.getColor())) {
+      if (!board.legalMove(current.getColor(), p)) {
         System.out.println("Invalid input");
         continue;
       }
       
       
-      board.boardUpdate(p, current.getColor());
+      board.boardUpdate(current.getColor(), p);
       board.print();
       Player oppoent = getOppoent(current);
-      if (board.haslegalMove(oppoent.getColor())){
+      if (board.legalMove(oppoent.getColor())){
         current = oppoent;
-      } else if (!board.haslegalMove(current.getColor())) {
+      } else if (!board.legalMove(current.getColor())) {
         isFinished = true;
       }
     }

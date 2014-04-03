@@ -18,4 +18,8 @@ public enum Direction {
     this.x = x;
     this.y = y;
   }
+  
+  public Point next(Point p) {
+    return new Point(p.x + this.x, p.y + this.y);
+  }
 }
