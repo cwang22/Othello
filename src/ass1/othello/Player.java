@@ -17,10 +17,12 @@ public class Player {
     Point p = null;
     Scanner s = new Scanner(System.in);
     if(myColor == Color.BLACK)
-    System.out.println("BLACK 's turn");
+    System.out.println("Black's turn");
     else
-      System.out.println("WHITE 's turn");
+      System.out.println("White 's turn");
+    System.out.println("Please input the location of point(x,y)\nx=");
     int x = s.nextInt();
+    System.out.println("y=");
     int y = s.nextInt();
 
     p = new Point(x, y);

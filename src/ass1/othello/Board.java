@@ -3,8 +3,6 @@ package ass1.othello;
 import java.awt.Color;
 import java.awt.Point;
 
-import othello.Direction;
-import othello.GirdColor;
 
 
 public class Board {
@@ -15,11 +13,12 @@ public class Board {
   private static int WHITE = 1;
   private static int EMPTY = 0;
   
-  private int blackCount;
-  private int whiteCount;
-  
   int[][] gameBoard;
   
+  
+  /*
+   * constructor
+   */
   Board(){
     gameBoard = new int[ROWS][COLS];
     
@@ -35,42 +34,13 @@ public class Board {
     gameBoard[4][3] = 1;
   }
   
-  public void boardUpdate(Color c, Point p){
-    gameBoard[p.x-1][p.y-1] = getColorInt(c);
-    turn(c,p);
-  }
-  
-  private void turn (Color c, Point p) {
-    for (Direction d : Direction.values()) {
-      if (legalMove(c, p, d)) {
-        turn(c, p, d);
-      }
-    }
-  }
-
-  private void turn (Color c, Point p, Direction d) {
-    Point nextPoint = d.next(p);
-
-      if(nextPoint.x == 0 || nextPoint.y == 0 || nextPoint.x == 8 || nextPoint.y == 8) {
-        return;
-      }
-    Color next = getColor(gameBoard[nextPoint.x-1][nextPoint.y-1]);
-      if (next != c) {
-        gameBoard[nextPoint.x-1][nextPoint.y-1] = getColorInt(c);
-        turn(c,nextPoint,d);
-      }
-
-  }
-  
-  private Color getOpponent (Color c) {
-    return c == Color.BLACK ? Color.WHITE : Color.BLACK;
-  }
-
-
-
-  void print(){
+//print gameBoard
+  public void print(){
+    System.out.println(" 12345678");
     for (int i = 0; i < ROWS; i++) {
+      System.out.print(i+1);
       for (int j = 0; j < COLS; j++) {
+        
         if(gameBoard[i][j] == EMPTY)
           System.out.print("-");
         if(gameBoard[i][j] == BLACK)
@@ -82,29 +52,9 @@ public class Board {
     }
   }
   
+/**Game Logic**/
   
- 
-  
-  public void init(){
-    
-  }
-  
-  private int getColorInt(Color c){
-    if(c == Color.BLACK)
-      return 2;
-    if(c == Color.WHITE)
-      return 1;
-    return 0;
-  }
-  
-  private Color getColor(int i){
-    if(i == BLACK)
-      return Color.BLACK;
-    if(i == WHITE)
-      return Color.WHITE;
-    return null;
-  }
-
+  //check if a player has legal move
   public boolean legalMove(Color c) {
     for (int i = 0; i < ROWS; i++) {
       for (int j = 0; j < COLS; j++) {
@@ -117,7 +67,10 @@ public class Board {
     return false;
   }
 
+  //check if a point is a legal move
   public boolean legalMove(Color c, Point p) {
+    if(gameBoard[p.x - 1][p.y -1] != 0)
+      return false;
     for(Direction d : Direction.values()){
       if(legalMove(c, p, d)){
         return true;
@@ -126,6 +79,7 @@ public class Board {
     return false;
   }
 
+  //check if a point is a legal move in given direction 
   private boolean legalMove (Color c, Point p, Direction d) {
     p = d.next(p);
     try{
@@ -140,8 +94,7 @@ public class Board {
     }
   }
 
-
-
+  //util function to find if there is a same color disc in given direction
   private boolean find (Color c, Point p, Direction d) {
     p = d.next(p);
     Color next = getColor(gameBoard[p.x - 1][p.y -1]);
@@ -155,22 +108,79 @@ public class Board {
     }
   }
 
-  public int count(Color c) {
-    for (int i = 0; i < ROWS; i++) {
-      for (int j = 0; j < COLS; j++) {
-        if(gameBoard[i][j] == EMPTY)
-          System.out.print("-");
-        if(gameBoard[i][j] == BLACK)
-          System.out.print("x");
-        if(gameBoard[i][j] == WHITE)
-          System.out.print("o");
+  
+  //insert a new Point and update board
+  public void boardUpdate(Color c, Point p){
+    gameBoard[p.x-1][p.y-1] = getColorInt(c);
+    turn(c,p);
+  }
+  
+  //turn all opponent's disc in all directions
+  private void turn (Color c, Point p) {
+    for (Direction d : Direction.values()) {
+      if (legalMove(c, p, d)) {
+        turn(c, p, d);
       }
+    }
+  }
+  
+  //turn all opponent's disc in given direction
+  private void turn (Color c, Point p, Direction d) {
+    Point nextPoint = d.next(p);
+
+      if(nextPoint.x == 0 || nextPoint.y == 0 || nextPoint.x == 8 || nextPoint.y == 8) {
+        return;
+      }
+    Color next = getColor(gameBoard[nextPoint.x-1][nextPoint.y-1]);
+      if (next != c) {
+        gameBoard[nextPoint.x-1][nextPoint.y-1] = getColorInt(c);
+        turn(c,nextPoint,d);
+      }
+  }
+
+  
+  
+  public void init(){
     
   }
+  
+/**Utils**/
+  
+  //util function to convert java.awt.Color to the number stand for the given color 
+  private int getColorInt(Color c){
+    if(c == Color.BLACK)
+      return 2;
+    if(c == Color.WHITE)
+      return 1;
     return 0;
   }
   
+  //util function to convert number stand for color to java.awt.Color
+  private Color getColor(int i){
+    if(i == BLACK)
+      return Color.BLACK;
+    if(i == WHITE)
+      return Color.WHITE;
+    return null;
+  }
+ 
+  //count amount of discs in a color
+  public int count(Color c) {
+    int count = 0;
+    int colorInt = getColorInt(c);
+    
+    for (int i = 0; i < ROWS; i++) {
+      for (int j = 0; j < COLS; j++) {
+        if(gameBoard[i][j] == colorInt)
+          count++;
+      }
+    }
+    
+    return count;
+  }
+  
   /**
+   * unit tests
    * @param args
    */
   public static void main(String[] args) {

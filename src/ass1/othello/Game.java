@@ -27,6 +27,7 @@ public class Game {
     while(!isFinished){
       Point p = current.placeDisc();
       
+      //check input
       if (!board.legalMove(current.getColor(), p)) {
         System.out.println("Invalid input");
         continue;
@@ -36,13 +37,14 @@ public class Game {
       board.boardUpdate(current.getColor(), p);
       board.print();
       Player oppoent = getOppoent(current);
-      if (board.legalMove(oppoent.getColor())){
+      if (board.legalMove(oppoent.getColor())){//if opponent has move
         current = oppoent;
-      } else if (!board.legalMove(current.getColor())) {
+      } else if (!board.legalMove(current.getColor())) {// if current has move
         isFinished = true;
       }
     }
     
+    //get Winner
     blackPlayer.setDiscNum(board.count(Color.BLACK));
     whitePlayer.setDiscNum(board.count(Color.WHITE));
     
