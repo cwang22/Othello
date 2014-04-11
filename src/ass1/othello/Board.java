@@ -3,8 +3,6 @@ package ass1.othello;
 import java.awt.Color;
 import java.awt.Point;
 
-
-
 public class Board {
   public static final int ROWS = 8;
   public static final int COLS = 8;
@@ -12,16 +10,19 @@ public class Board {
   private static int BLACK = 2;
   private static int WHITE = 1;
   private static int EMPTY = 0;
-  
+
   int[][] gameBoard;
-  
-  
+
   /*
    * constructor
    */
-  Board(){
+  Board() {
+    init();
+  }
+
+  public void init() {
     gameBoard = new int[ROWS][COLS];
-    
+
     for (int i = 0; i < ROWS; i++) {
       for (int j = 0; j < COLS; j++) {
         gameBoard[i][j] = 0;
@@ -33,32 +34,32 @@ public class Board {
     gameBoard[3][4] = 1;
     gameBoard[4][3] = 1;
   }
-  
-//print gameBoard
-  public void print(){
+
+  // print gameBoard
+  public void print() {
     System.out.println(" 12345678");
     for (int i = 0; i < ROWS; i++) {
-      System.out.print(i+1);
+      System.out.print(i + 1);
       for (int j = 0; j < COLS; j++) {
-        
-        if(gameBoard[i][j] == EMPTY)
+
+        if (gameBoard[i][j] == EMPTY)
           System.out.print("-");
-        if(gameBoard[i][j] == BLACK)
+        if (gameBoard[i][j] == BLACK)
           System.out.print("x");
-        if(gameBoard[i][j] == WHITE)
+        if (gameBoard[i][j] == WHITE)
           System.out.print("o");
       }
       System.out.println();
     }
   }
-  
-/**Game Logic**/
-  
-  //check if a player has legal move
+
+  /** Game Logic **/
+
+  // check if a player has legal move
   public boolean legalMove(Color c) {
     for (int i = 0; i < ROWS; i++) {
       for (int j = 0; j < COLS; j++) {
-        Point p = new Point(i+1,j+1);
+        Point p = new Point(i + 1, j + 1);
         if (legalMove(c, p)) {
           return true;
         }
@@ -67,130 +68,126 @@ public class Board {
     return false;
   }
 
-  //check if a point is a legal move
+  // check if a point is a legal move
   public boolean legalMove(Color c, Point p) {
-    if(gameBoard[p.x - 1][p.y -1] != 0)
+    if (gameBoard[p.x - 1][p.y - 1] != 0)
       return false;
-    for(Direction d : Direction.values()){
-      if(legalMove(c, p, d)){
+    for (Direction d : Direction.values()) {
+      if (legalMove(c, p, d)) {
         return true;
       }
     }
     return false;
   }
 
-  //check if a point is a legal move in given direction 
-  private boolean legalMove (Color c, Point p, Direction d) {
+  // check if a point is a legal move in given direction
+  private boolean legalMove(Color c, Point p, Direction d) {
     p = d.next(p);
-    try{
-    Color next = getColor(gameBoard[p.x - 1][p.y -1]);
-    if (next == null || next == c) {
-      return false;
-    } else {
-      return find(c, p, d);
-    }
-    }catch(ArrayIndexOutOfBoundsException e){
+    try {
+      Color next = getColor(gameBoard[p.x - 1][p.y - 1]);
+      if (next == null || next == c) {
+        return false;
+      } else {
+        return findLast(c, p, d);
+      }
+    } catch (ArrayIndexOutOfBoundsException e) {
       return false;
     }
   }
 
-  //util function to find if there is a same color disc in given direction
-  private boolean find (Color c, Point p, Direction d) {
+  // util function to find if there is a same color disc in given direction
+  private boolean findLast(Color c, Point p, Direction d) {
     p = d.next(p);
-    Color next = getColor(gameBoard[p.x - 1][p.y -1]);
+    Color next = getColor(gameBoard[p.x - 1][p.y - 1]);
     if (next == c) {
-      //System.out.println(p);
+      // System.out.println(p);
       return true;
     } else if (next == null) {
       return false;
     } else {
-      return find(c, p, d);
+      return findLast(c, p, d);
     }
   }
 
-  
-  //insert a new Point and update board
-  public void boardUpdate(Color c, Point p){
-    gameBoard[p.x-1][p.y-1] = getColorInt(c);
-    turn(c,p);
+  // insert a new Point and update board
+  public void boardUpdate(Color c, Point p) {
+    gameBoard[p.x - 1][p.y - 1] = getColorInt(c);
+    turn(c, p);
   }
-  
-  //turn all opponent's disc in all directions
-  private void turn (Color c, Point p) {
+
+  // turn all opponent's disc in all directions
+  private void turn(Color c, Point p) {
     for (Direction d : Direction.values()) {
       if (legalMove(c, p, d)) {
         turn(c, p, d);
       }
     }
   }
-  
-  //turn all opponent's disc in given direction
-  private void turn (Color c, Point p, Direction d) {
+
+  // turn all opponent's disc in given direction
+  private void turn(Color c, Point p, Direction d) {
     Point nextPoint = d.next(p);
 
-      if(nextPoint.x == 0 || nextPoint.y == 0 || nextPoint.x == 8 || nextPoint.y == 8) {
-        return;
-      }
-    Color next = getColor(gameBoard[nextPoint.x-1][nextPoint.y-1]);
-      if (next != c) {
-        gameBoard[nextPoint.x-1][nextPoint.y-1] = getColorInt(c);
-        turn(c,nextPoint,d);
-      }
+    if (nextPoint.x == 0 || nextPoint.y == 0 || nextPoint.x == 8
+        || nextPoint.y == 8) {
+      return;
+    }
+    Color next = getColor(gameBoard[nextPoint.x - 1][nextPoint.y - 1]);
+    if (next != c) {
+      gameBoard[nextPoint.x - 1][nextPoint.y - 1] = getColorInt(c);
+      turn(c, nextPoint, d);
+    }
   }
 
-  
-  
-  public void init(){
-    
-  }
-  
-/**Utils**/
-  
-  //util function to convert java.awt.Color to the number stand for the given color 
-  private int getColorInt(Color c){
-    if(c == Color.BLACK)
+  /** Utils **/
+
+  // util function to convert java.awt.Color to the number stand for the given
+  // color
+  private int getColorInt(Color c) {
+    if (c == Color.BLACK)
       return 2;
-    if(c == Color.WHITE)
+    if (c == Color.WHITE)
       return 1;
     return 0;
   }
-  
-  //util function to convert number stand for color to java.awt.Color
-  private Color getColor(int i){
-    if(i == BLACK)
+
+  // util function to convert number stand for color to java.awt.Color
+  private Color getColor(int i) {
+    if (i == BLACK)
       return Color.BLACK;
-    if(i == WHITE)
+    if (i == WHITE)
       return Color.WHITE;
     return null;
   }
- 
-  //count amount of discs in a color
+
+  // count amount of discs in a color
   public int count(Color c) {
     int count = 0;
     int colorInt = getColorInt(c);
-    
+
     for (int i = 0; i < ROWS; i++) {
       for (int j = 0; j < COLS; j++) {
-        if(gameBoard[i][j] == colorInt)
+        if (gameBoard[i][j] == colorInt)
           count++;
       }
     }
-    
+
     return count;
   }
-  
+
   /**
    * unit tests
+   * 
    * @param args
    */
   public static void main(String[] args) {
     Board b = new Board();
-    b.turn(Color.BLACK, new Point(5,3));
+    b.turn(Color.BLACK, new Point(5, 3));
     b.print();
     boolean t1 = b.legalMove(Color.BLACK);
-    boolean t2 = b.legalMove(Color.BLACK, new Point(5,3));
-    boolean t3 = b.legalMove(Color.BLACK, new Point(1,4), Direction.E);
-    
+    boolean t2 = b.legalMove(Color.BLACK, new Point(5, 3));
+    boolean t3 = b.legalMove(Color.BLACK, new Point(1, 4), Direction.E);
+
     System.out.println(t1);
     System.out.println(t2);
     System.out.println(t3);
