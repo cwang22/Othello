@@ -44,8 +44,8 @@ public class Game {
     }
 
     // get Winner
-    blackPlayer.setDiscNum(board.count(Color.BLACK));
-    whitePlayer.setDiscNum(board.count(Color.WHITE));
+    blackPlayer.setDiscNum(board.getScore(Color.BLACK));
+    whitePlayer.setDiscNum(board.getScore(Color.WHITE));
 
     if (blackPlayer.getDiscNum() > whitePlayer.getDiscNum()) {
       System.out.println("BLACK WIN");

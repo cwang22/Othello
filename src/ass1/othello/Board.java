@@ -5,11 +5,14 @@ import java.awt.Point;
 
 public class Board {
   public static final int ROWS = 8;
-  public static final int COLS = 8;
+  public static final int COLUMNS = 8;
 
   private static int BLACK = 2;
   private static int WHITE = 1;
   private static int EMPTY = 0;
+  
+  private int blackCount = 0;
+  private int whiteCount = 0;
 
   int[][] gameBoard;
 
@@ -21,10 +24,10 @@ public class Board {
   }
 
   public void init() {
-    gameBoard = new int[ROWS][COLS];
+    gameBoard = new int[ROWS][COLUMNS];
 
     for (int i = 0; i < ROWS; i++) {
-      for (int j = 0; j < COLS; j++) {
+      for (int j = 0; j < COLUMNS; j++) {
         gameBoard[i][j] = 0;
       }
     }
@@ -33,6 +36,9 @@ public class Board {
     gameBoard[4][4] = 2;
     gameBoard[3][4] = 1;
     gameBoard[4][3] = 1;
+    
+    blackCount = 2;
+    whiteCount = 2;
   }
 
   // print gameBoard
@@ -40,7 +46,7 @@ public class Board {
     System.out.println(" 12345678");
     for (int i = 0; i < ROWS; i++) {
       System.out.print(i + 1);
-      for (int j = 0; j < COLS; j++) {
+      for (int j = 0; j < COLUMNS; j++) {
 
         if (gameBoard[i][j] == EMPTY)
           System.out.print("-");
@@ -58,7 +64,7 @@ public class Board {
   // check if a player has legal move
   public boolean legalMove(Color c) {
     for (int i = 0; i < ROWS; i++) {
-      for (int j = 0; j < COLS; j++) {
+      for (int j = 0; j < COLUMNS; j++) {
         Point p = new Point(i + 1, j + 1);
         if (legalMove(c, p)) {
           return true;
@@ -161,17 +167,20 @@ public class Board {
   }
 
   // count amount of discs in a color
-  public int count(Color c) {
+  public int getScore(Color c) {
     int count = 0;
     int colorInt = getColorInt(c);
 
     for (int i = 0; i < ROWS; i++) {
-      for (int j = 0; j < COLS; j++) {
+      for (int j = 0; j < COLUMNS; j++) {
         if (gameBoard[i][j] == colorInt)
           count++;
       }
     }
-
+    if(c == Color.BLACK)
+      blackCount = count;
+    else
+      whiteCount = count; 
     return count;
   }
 
