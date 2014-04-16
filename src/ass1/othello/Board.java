@@ -178,10 +178,9 @@ public class Board {
       }
     }
     if(c == Color.BLACK)
-      blackCount = count;
+      return blackCount = count;
     else
-      whiteCount = count; 
-    return count;
+      return whiteCount = count; 
   }
 
   /**
