@@ -1,27 +1,30 @@
-package ass1.othello;
+package othello;
 
 import java.awt.Color;
 import java.awt.Point;
 import java.util.Scanner;
 
-public class BlackPlayer extends Player {
-  public static final Color BLACK = Color.BLACK;
+public class HumanPlayer extends Player{
 
-  public BlackPlayer() {
-    super(BLACK);
-
+  public HumanPlayer(Color c) {
+    super(c);
   }
-
+  
   @SuppressWarnings("resource")
   public Point placeDisc() {
     Point p = null;
     Scanner s = new Scanner(System.in);
-    System.out.println("Black's turn");
+    if (myColor == Color.BLACK)
+      System.out.println("Black's turn");
+    else
+      System.out.println("White 's turn");
     System.out.println("Please input the location of point(x,y)\nx=");
     int x = s.nextInt();
     System.out.println("y=");
     int y = s.nextInt();
+
     p = new Point(x, y);
     return p;
   }
+  
 }

@@ -1,7 +1,8 @@
-package ass1.othello;
+package othello;
 
 import java.awt.Color;
 import java.awt.Point;
+import java.util.Scanner;
 
 public class Game {
 
@@ -10,9 +11,25 @@ public class Game {
   Board board;
 
   public Game() {
-    blackPlayer = new BlackPlayer();
-    whitePlayer = new WhitePlayer();
     board = new Board();
+    blackPlayer = new HumanPlayer(Color.BLACK);
+    
+    Scanner s = new Scanner(System.in);
+    System.out.println("Select Game mode:\n1. Player Vs Player\n2. Player Vs Computer");
+    int choice = s.nextInt();
+    if(choice == 2){
+      System.out.println("-----Player Vs Player------");
+      whitePlayer = new AIPlayer(Color.WHITE, board);
+    }
+    else if(choice == 1) {
+      System.out.println("-----Player Vs Computer------");
+      whitePlayer = new HumanPlayer(Color.WHITE);
+    }
+    else {
+      System.out.println("invalid input.");
+      System.exit(-1);
+    }
+    
     board.print();
   }
 
@@ -44,8 +61,8 @@ public class Game {
     }
 
     // get Winner
-    blackPlayer.setDiscNum(board.count(Color.BLACK));
-    whitePlayer.setDiscNum(board.count(Color.WHITE));
+    blackPlayer.setDiscNum(board.getScore(Color.BLACK));
+    whitePlayer.setDiscNum(board.getScore(Color.WHITE));
 
     if (blackPlayer.getDiscNum() > whitePlayer.getDiscNum()) {
       System.out.println("BLACK WIN");
