@@ -5,7 +5,7 @@ import java.awt.Point;
 import java.util.Scanner;
 
 public class Player {
-  private Color myColor;
+  protected Color myColor;
   private int discNum;
 
   public Player(Color c) {

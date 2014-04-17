@@ -200,4 +200,17 @@ public class Board {
     System.out.println(t2);
     System.out.println(t3);
   }
+
+  public Point getLegalMove(Color c) {
+    Point p = null;
+    for (int i = 0; i < ROWS; i++) {
+      for (int j = 0; j < COLUMNS; j++) {
+        p = new Point(i + 1, j + 1);
+        if (legalMove(c, p)) {
+          return p;
+        }
+      }
+    }
+    return p;
+  }
 }
