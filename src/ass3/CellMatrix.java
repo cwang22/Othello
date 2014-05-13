@@ -1,11 +1,9 @@
 package ass3;
 
-import java.awt.Color;
 import java.awt.Point;
+import java.util.ArrayList;
+import java.util.HashMap;
 
-/**
- * @author wang w
- */
 public class CellMatrix {
 
   public static int ROWS = 8;
@@ -14,12 +12,15 @@ public class CellMatrix {
   Player blackPlayer;
   Player whitePlayer;
   Player current;
+  
+  int step;
+  ArrayList<History> history;
 
   Point nextPoint = null;
 
   public CellMatrix() {
     cells = new Cell[8][8];
-
+    
     for (int i = 0; i < ROWS; i++) {
       for (int j = 0; j < COLS; j++) {
         cells[i][j] = Cell.EMPTY;
@@ -29,41 +30,75 @@ public class CellMatrix {
     cells[4][4] = Cell.BLACK;
     cells[3][4] = Cell.WHITE;
     cells[4][3] = Cell.WHITE;
-    print();
     blackPlayer = new Player(Cell.BLACK, "Player1");
     whitePlayer = new Player(Cell.WHITE, "Player2");
     current = blackPlayer;
-
+    history = new ArrayList<History>();
+    step = 0;
   }
 
   public void start() {
-    current = blackPlayer;
-
-    int i = 0;
     boolean isFinished = false;
 
     while (!isFinished) {
-      Point p = current.placeDisc();
+      print();
 
-      // check input
+      String input = current.input();
+      System.out.println(input);
+      Point p = null;
+      if(input == "point")
+        p = current.getNext();
+      if(input == "timeout")
+        current = getOpponent();
+      if(input == "undo")
+        undo();
+      if(input == "redo")
+        redo();
+      
+
+      
       if (p != null) {
-        
+
         if (!legalMove(current.getCell(), p)) {
           System.out.println("Invalid input");
           continue;
         }
+        save();
+        step++;
 
         boardUpdate(current.getCell(), p);
-        print();
         Player oppoent = getOpponent();
         if (legalMove(oppoent.getCell())) {// if opponent has move
           current = oppoent;
         } else if (!legalMove(current.getCell())) {// if current has move
           isFinished = true;
         }
-      }else{
-        current = getOpponent();
       }
+    }
+  }
+  
+  public void save() {
+    Cell[][] save = cells.clone();
+    History h = new History(save,current);
+    if(step == history.size())
+      history.add(h);
+    else
+      history.set(step, h);
+  }
+  
+  public void undo() {    
+    if(step>1){
+      History h = history.get(--step);
+      cells = h.getCells();
+      current = h.getCurrent();
+    }
+  }
+  
+  public void redo() {
+    if(step < history.size()){
+      History h = history.get(++step);
+      cells = h.getCells();
+      current = h.getCurrent();
     }
   }
 
