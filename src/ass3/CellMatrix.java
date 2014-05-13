@@ -3,21 +3,26 @@ package ass3;
 import java.awt.Color;
 import java.awt.Point;
 
-
 /**
  * @author wang w
  */
-public class CellMatrix {
+public class CellMatrix implements Runnable {
 
   public static int ROWS = 8;
   public static int COLS = 8;
   Cell[][] cells;
   Player blackPlayer;
   Player whitePlayer;
+  Player current;
+  
+  Thread t1 = new PlayDisc(this);
+  Thread t2 = new OthelloTimer(this);
+
+  Point nextPoint = null;
 
   public CellMatrix() {
     cells = new Cell[8][8];
-    
+
     for (int i = 0; i < ROWS; i++) {
       for (int j = 0; j < COLS; j++) {
         cells[i][j] = Cell.EMPTY;
@@ -30,32 +35,14 @@ public class CellMatrix {
     print();
     blackPlayer = new Player(Cell.BLACK, "Player1");
     whitePlayer = new Player(Cell.WHITE, "Player2");
+    current = blackPlayer;
 
   }
-  
+
   public void start() {
-    Player current = blackPlayer;
-
-    boolean isFinished = false;
-    while (!isFinished) {
-      Point p = current.placeDisc();
-
-      // check input
-      if (!legalMove(current.getCell(), p)) {
-        System.out.println("Invalid input");
-        continue;
-      }
-
-      boardUpdate(current.getCell(), p);
-      print();
-      Player oppoent = getOpponent(current);
-      if (legalMove(oppoent.getCell())) {// if opponent has move
-        current = oppoent;
-      } else if (!legalMove(current.getCell())) {// if current has move
-        isFinished = true;
-      }
-    }
-
+    t2.start();
+    t1.start();
+    
   }
 
   private Player getOpponent(Player current) {
@@ -94,7 +81,7 @@ public class CellMatrix {
 
   // check if a point is a legal move
   public boolean legalMove(Cell c, Point p) {
-    if ( p.x < 1 || p.x > 8 || p.y <1 || p.y > 8)
+    if (p.x < 1 || p.x > 8 || p.y < 1 || p.y > 8)
       return false;
     if (cells[p.x - 1][p.y - 1] != Cell.EMPTY)
       return false;
@@ -176,6 +163,54 @@ public class CellMatrix {
       }
     }
     return p;
+  }
+
+
+  @Override
+  public void run() {
+//    current = blackPlayer;
+//
+//    int i = 0;
+//    boolean isFinished = false;
+//
+//    while (!isFinished) {
+//      
+//      Thread t = new Thread(pd);
+//      t.run();
+//      while(true){
+//        System.out.print(i);
+//        if(i>60) {
+//          pd.interrupt();
+//          break;
+//        }
+//          
+//        
+//      }
+//      // check input
+//      if (nextPoint != null) {
+//
+//        Point p = nextPoint;
+//        
+//        if (!legalMove(current.getCell(), p)) {
+//          System.out.println("Invalid input");
+//          continue;
+//        }
+//
+//        boardUpdate(current.getCell(), p);
+//        print();
+//        Player oppoent = getOpponent(current);
+//        if (legalMove(oppoent.getCell())) {// if opponent has move
+//          current = oppoent;
+//        } else if (!legalMove(current.getCell())) {// if current has move
+//          isFinished = true;
+//        }
+//      }
+//    }
+
+  }
+
+  public Player getCurrent() {
+    return current;
   }
 
 }

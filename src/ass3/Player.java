@@ -10,7 +10,7 @@ import java.util.Scanner;
  *
  * @author wang w
  */
-public class Player {
+public class Player{
     Cell c;
     String name;
 
