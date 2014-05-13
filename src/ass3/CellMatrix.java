@@ -46,10 +46,6 @@ public class CellMatrix {
       Point p = current.placeDisc();
 
       // check input
-      if (!legalMove(current.getCell(), p)) {
-        System.out.println("Invalid input");
-        continue;
-      }
       if (p != null) {
         
         if (!legalMove(current.getCell(), p)) {
@@ -59,17 +55,19 @@ public class CellMatrix {
 
         boardUpdate(current.getCell(), p);
         print();
-        Player oppoent = getOpponent(current);
+        Player oppoent = getOpponent();
         if (legalMove(oppoent.getCell())) {// if opponent has move
           current = oppoent;
         } else if (!legalMove(current.getCell())) {// if current has move
           isFinished = true;
         }
+      }else{
+        current = getOpponent();
       }
     }
   }
 
-  private Player getOpponent(Player current) {
+  private Player getOpponent() {
     return current == blackPlayer ? whitePlayer : blackPlayer;
   }
 

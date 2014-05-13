@@ -1,6 +1,5 @@
 package ass3;
 
-import java.awt.Color;
 import java.awt.Point;
 import java.io.IOException;
 import java.util.Scanner;
@@ -30,7 +29,7 @@ public class Player {
       while (System.in.available() == 0) {
         if (System.currentTimeMillis() - start > 10000) {
           System.out.println(System.currentTimeMillis());
-          return new Point(1,1);
+          return null;
         }
       }
       int x = s.nextInt();
