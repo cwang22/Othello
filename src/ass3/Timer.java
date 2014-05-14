@@ -3,7 +3,7 @@ package ass3;
 public class Timer{
   static Timer t;
   
-  static final int LIMIT = 10;
+  static final int LIMIT = 60;
   long start;
   private Timer() {
   }

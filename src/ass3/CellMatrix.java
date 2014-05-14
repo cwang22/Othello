@@ -35,6 +35,7 @@ public class CellMatrix {
     current = blackPlayer;
     history = new ArrayList<History>();
     step = 0;
+    save();
   }
 
   public void start() {
@@ -63,13 +64,15 @@ public class CellMatrix {
           System.out.println("Invalid input");
           continue;
         }
-        save();
-        step++;
-
         boardUpdate(current.getCell(), p);
         Player oppoent = getOpponent();
+
+
+        
         if (legalMove(oppoent.getCell())) {// if opponent has move
           current = oppoent;
+          step++;
+          save();
         } else if (!legalMove(current.getCell())) {// if current has move
           isFinished = true;
         }
@@ -78,7 +81,12 @@ public class CellMatrix {
   }
   
   public void save() {
-    Cell[][] save = cells.clone();
+    Cell[][] save = new Cell[ROWS][COLS];
+    for(int i = 0; i < ROWS; i++) {
+      for(int j = 0; j < COLS; j++) {
+        save[i][j] = cells[i][j];
+      }
+    }
     History h = new History(save,current);
     if(step == history.size())
       history.add(h);
@@ -87,7 +95,7 @@ public class CellMatrix {
   }
   
   public void undo() {    
-    if(step>1){
+    if(step>0){
       History h = history.get(--step);
       cells = h.getCells();
       current = h.getCurrent();
@@ -95,7 +103,8 @@ public class CellMatrix {
   }
   
   public void redo() {
-    if(step < history.size()){
+    System.out.print(step);
+    if(step < history.size() - 1){
       History h = history.get(++step);
       cells = h.getCells();
       current = h.getCurrent();
