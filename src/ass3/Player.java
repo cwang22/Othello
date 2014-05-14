@@ -16,43 +16,17 @@ public class Player {
     this.c = c;
     this.name = name;
   }
-
-  public Point placeDisc() {
-    Point p = null;
-    if (c == Cell.BLACK)
-      System.out.println("Black's turn");
-    else
-      System.out.println("White 's turn");
-    System.out.println("Please input the location of point(x,y)\nx=");
-    Scanner s = new Scanner(System.in);
-    long start = System.currentTimeMillis();
-    try {
-      while (System.in.available() == 0) {
-        if (System.currentTimeMillis() - start > 10000) {
-          System.out.println(System.currentTimeMillis());
-          return null;
-        }
-      }
-      int x = s.nextInt();
-      System.out.println("y=");
-      int y = s.nextInt();
-
-      p = new Point(x, y);
-
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-    return p;
-  }
-
+  
   public Cell getCell() {
     return c;
   }
 
+  @SuppressWarnings("resource")
   public String input() {
     System.out.println(c.toString() + "'s turn");
-    System.out.println("input Point[x y](use space in between), press U to undo, press R to redo");
+    System.out.println("input Point[x y](use space in between)");
+    System.out.println("input [U number](use space in between) to undo");
+    System.out.println("input [R number](use space in between) to redo");
     Scanner s = new Scanner(System.in);
     Timer t = Timer.getTimer();
     t.start();
@@ -74,9 +48,13 @@ public class Player {
         return "point";
       } else {
         if (str.equalsIgnoreCase("u"))
-          return "undo";
+          return "-1";
         else if (str.equalsIgnoreCase("r"))
-          return "redo";
+          return "1";
+        else if (str.matches("[Uu]\\s\\d+"))
+          return "-" + str.substring(2);
+        else if (str.matches("[Rr]\\s\\d+"))
+          return str.substring(2);
       }
     } catch (IOException e) {
       e.printStackTrace();
@@ -88,6 +66,4 @@ public class Player {
   public Point getNext() {
     return next;
   }
-  
-
 }

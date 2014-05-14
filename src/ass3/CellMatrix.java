@@ -2,7 +2,6 @@ package ass3;
 
 import java.awt.Point;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class CellMatrix {
 
@@ -16,7 +15,6 @@ public class CellMatrix {
   int step;
   ArrayList<History> history;
 
-  Point nextPoint = null;
 
   public CellMatrix() {
     cells = new Cell[8][8];
@@ -26,6 +24,7 @@ public class CellMatrix {
         cells[i][j] = Cell.EMPTY;
       }
     }
+    
     cells[3][3] = Cell.BLACK;
     cells[4][4] = Cell.BLACK;
     cells[3][4] = Cell.WHITE;
@@ -43,21 +42,24 @@ public class CellMatrix {
 
     while (!isFinished) {
       print();
-
+      
       String input = current.input();
       System.out.println(input);
       Point p = null;
       if(input == "point")
         p = current.getNext();
-      if(input == "timeout")
+      else if(input == "timeout")
         current = getOpponent();
-      if(input == "undo")
-        undo();
-      if(input == "redo")
-        redo();
-      
-
-      
+      else if(input == "invalid")
+        continue;
+      else {
+        int i = Integer.parseInt(input);
+        if(i < 0)
+          undo(i);
+        if(i > 0)
+          redo(i);
+      }
+           
       if (p != null) {
 
         if (!legalMove(current.getCell(), p)) {
@@ -94,18 +96,19 @@ public class CellMatrix {
       history.set(step, h);
   }
   
-  public void undo() {    
-    if(step>0){
-      History h = history.get(--step);
+  public void undo(int i) {    
+    if(step + i >= 0){
+      step += i;
+      History h = history.get(step);
       cells = h.getCells();
       current = h.getCurrent();
     }
   }
   
-  public void redo() {
-    System.out.print(step);
-    if(step < history.size() - 1){
-      History h = history.get(++step);
+  public void redo(int i) {
+    if(step + i < history.size()){
+      step += i;
+      History h = history.get(step);
       cells = h.getCells();
       current = h.getCurrent();
     }
@@ -118,13 +121,7 @@ public class CellMatrix {
   public void print() {
     for (int i = 0; i < ROWS; i++) {
       for (int j = 0; j < COLS; j++) {
-        if (cells[i][j] == Cell.BLACK) {
-          System.out.print("X ");
-        } else if (cells[i][j] == Cell.WHITE) {
-          System.out.print("O ");
-        } else {
-          System.out.print("- ");
-        }
+        System.out.print(cells[i][j].print()+" ");
       }
       System.out.println();
     }
