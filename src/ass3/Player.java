@@ -4,9 +4,6 @@ import java.awt.Point;
 import java.io.IOException;
 import java.util.Scanner;
 
-/**
- * @author wang w
- */
 public class Player {
   Cell c;
   String name;
@@ -16,9 +13,18 @@ public class Player {
     this.c = c;
     this.name = name;
   }
-  
+
   public Cell getCell() {
     return c;
+  }
+
+  public static Player create(String type, Cell c, String name, CellMatrix cm) {
+    if (type == "AIPlayer") {
+      return new AIPlayer(c, name, cm);
+    }
+    if (type == "HumanPlayer")
+      return new HumanPlayer(c, name);
+    return new Player(c, name);
   }
 
   @SuppressWarnings("resource")
@@ -29,7 +35,6 @@ public class Player {
     System.out.println("input [R number](use space in between) to redo");
     Scanner s = new Scanner(System.in);
     Timer t = Timer.getTimer();
-    t.start();
     try {
       while (System.in.available() == 0) {
         if (t.isTimeOut()) {
@@ -37,7 +42,7 @@ public class Player {
           return "timeout";
         }
       }
-      
+
       String str = s.nextLine();
       System.out.println(str);
       if (str.matches("\\d\\s\\d")) {
@@ -59,7 +64,7 @@ public class Player {
     } catch (IOException e) {
       e.printStackTrace();
     }
-    
+
     return "invalid";
   }
 

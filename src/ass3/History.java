@@ -3,7 +3,7 @@ package ass3;
 public class History {
   private Cell[][] cells;
   private Player current;
-  
+
   public History(Cell[][] cells, Player current) {
     super();
     this.cells = cells;
@@ -16,5 +16,5 @@ public class History {
 
   public Player getCurrent() {
     return current;
-  }  
+  }
 }

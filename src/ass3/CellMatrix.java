@@ -11,26 +11,25 @@ public class CellMatrix {
   Player blackPlayer;
   Player whitePlayer;
   Player current;
-  
+
   int step;
   ArrayList<History> history;
 
-
   public CellMatrix() {
     cells = new Cell[8][8];
-    
+
     for (int i = 0; i < ROWS; i++) {
       for (int j = 0; j < COLS; j++) {
         cells[i][j] = Cell.EMPTY;
       }
     }
-    
+
     cells[3][3] = Cell.BLACK;
     cells[4][4] = Cell.BLACK;
     cells[3][4] = Cell.WHITE;
     cells[4][3] = Cell.WHITE;
-    blackPlayer = new Player(Cell.BLACK, "Player1");
-    whitePlayer = new Player(Cell.WHITE, "Player2");
+    blackPlayer = Player.create("HumanPlayer", Cell.BLACK, "BlackPlayer", this);
+    whitePlayer = Player.create("AIPlayer", Cell.WHITE, "WhitePlayer", this);
     current = blackPlayer;
     history = new ArrayList<History>();
     step = 0;
@@ -42,24 +41,25 @@ public class CellMatrix {
 
     while (!isFinished) {
       print();
-      
+      Timer.getTimer().start();
+      System.out.println(Timer.getTimer().getStartTime());
       String input = current.input();
       System.out.println(input);
       Point p = null;
-      if(input == "point")
+      if (input == "point")
         p = current.getNext();
-      else if(input == "timeout")
+      else if (input == "timeout")
         current = getOpponent();
-      else if(input == "invalid")
+      else if (input == "invalid")
         continue;
       else {
         int i = Integer.parseInt(input);
-        if(i < 0)
+        if (i < 0)
           undo(i);
-        if(i > 0)
+        if (i > 0)
           redo(i);
       }
-           
+
       if (p != null) {
 
         if (!legalMove(current.getCell(), p)) {
@@ -69,8 +69,6 @@ public class CellMatrix {
         boardUpdate(current.getCell(), p);
         Player oppoent = getOpponent();
 
-
-        
         if (legalMove(oppoent.getCell())) {// if opponent has move
           current = oppoent;
           step++;
@@ -81,32 +79,32 @@ public class CellMatrix {
       }
     }
   }
-  
+
   public void save() {
     Cell[][] save = new Cell[ROWS][COLS];
-    for(int i = 0; i < ROWS; i++) {
-      for(int j = 0; j < COLS; j++) {
+    for (int i = 0; i < ROWS; i++) {
+      for (int j = 0; j < COLS; j++) {
         save[i][j] = cells[i][j];
       }
     }
-    History h = new History(save,current);
-    if(step == history.size())
+    History h = new History(save, current);
+    if (step == history.size())
       history.add(h);
     else
       history.set(step, h);
   }
-  
-  public void undo(int i) {    
-    if(step + i >= 0){
+
+  public void undo(int i) {
+    if (step + i >= 0) {
       step += i;
       History h = history.get(step);
       cells = h.getCells();
       current = h.getCurrent();
     }
   }
-  
+
   public void redo(int i) {
-    if(step + i < history.size()){
+    if (step + i < history.size()) {
       step += i;
       History h = history.get(step);
       cells = h.getCells();
@@ -121,7 +119,7 @@ public class CellMatrix {
   public void print() {
     for (int i = 0; i < ROWS; i++) {
       for (int j = 0; j < COLS; j++) {
-        System.out.print(cells[i][j].print()+" ");
+        System.out.print(cells[i][j].print() + " ");
       }
       System.out.println();
     }
