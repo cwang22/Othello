@@ -33,7 +33,7 @@ public class CellMatrix {
     current = blackPlayer;
     history = new ArrayList<History>();
     step = 0;
-    save();
+    save();//save for the 1st time when init
   }
 
   public void start() {
@@ -46,6 +46,7 @@ public class CellMatrix {
       String input = current.input();
       System.out.println(input);
       Point p = null;
+      
       if (input == "point")
         p = current.getNext();
       else if (input == "timeout")
@@ -61,25 +62,48 @@ public class CellMatrix {
       }
 
       if (p != null) {
-
         if (!legalMove(current.getCell(), p)) {
           System.out.println("Invalid input");
           continue;
         }
+        
         boardUpdate(current.getCell(), p);
         Player oppoent = getOpponent();
 
         if (legalMove(oppoent.getCell())) {// if opponent has move
           current = oppoent;
           step++;
-          save();
+          save();//every time a player make a valid move, switch player then save.
         } else if (!legalMove(current.getCell())) {// if current has move
           isFinished = true;
         }
       }
     }
+    finalResult();
+    
+  }
+  
+  //print winner
+  public void finalResult() {
+    int black = 0;
+    int white = 0;
+    for(int i = 0; i < ROWS; i++) {
+      for(int j = 0; j < COLS; j++) {
+        if(cells[i][j] == Cell.BLACK)
+          black++;
+        if(cells[i][j] == Cell.WHITE)
+          white++;
+      }
+    }
+    if(black > white)
+      System.out.println("Black win");
+    if(white > black)
+      System.out.println("White win");
+    else
+      System.out.println("Draw");
   }
 
+  //save current cells and player to a history object and add to history list.
   public void save() {
     Cell[][] save = new Cell[ROWS][COLS];
     for (int i = 0; i < ROWS; i++) {
@@ -94,6 +118,7 @@ public class CellMatrix {
       history.set(step, h);
   }
 
+  //undo i step
   public void undo(int i) {
     if (step + i >= 0) {
       step += i;
@@ -103,6 +128,7 @@ public class CellMatrix {
     }
   }
 
+  //redo i step
   public void redo(int i) {
     if (step + i < history.size()) {
       step += i;
@@ -110,10 +136,6 @@ public class CellMatrix {
       cells = h.getCells();
       current = h.getCurrent();
     }
-  }
-
-  private Player getOpponent() {
-    return current == blackPlayer ? whitePlayer : blackPlayer;
   }
 
   public void print() {
@@ -173,6 +195,7 @@ public class CellMatrix {
   private boolean findLast(Cell c, Point p, Direction d) {
     p = d.next(p);
     Cell next = cells[p.x - 1][p.y - 1];
+    
     if (next == c) {
       // System.out.println(p);
       return true;
@@ -225,9 +248,8 @@ public class CellMatrix {
     }
     return p;
   }
-
-  public Player getCurrent() {
-    return current;
+  
+  private Player getOpponent() {
+    return current == blackPlayer ? whitePlayer : blackPlayer;
   }
-
 }

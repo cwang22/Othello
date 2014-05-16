@@ -16,6 +16,7 @@ public class Timer {
     return t;
   }
 
+  //save current system timer
   public void start() {
     start = System.currentTimeMillis();
   }
@@ -23,7 +24,8 @@ public class Timer {
   public long getStartTime() {
     return start;
   }
-
+  
+  //compare with saved start time.
   public boolean isTimeOut() {
     long current = System.currentTimeMillis();
     return (current - start) > (LIMIT * 1000);
