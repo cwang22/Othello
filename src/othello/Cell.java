@@ -1,4 +1,4 @@
-package ass3;
+package othello;
 
 public enum Cell implements Cloneable {
   BLACK("x"), WHITE("o"), EMPTY("-");

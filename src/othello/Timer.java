@@ -1,4 +1,4 @@
-package ass3;
+package othello;
 
 public class Timer {
   static Timer t;

@@ -1,4 +1,4 @@
-package ass3;
+package othello;
 
 import java.awt.Point;
 import java.util.ArrayList;
